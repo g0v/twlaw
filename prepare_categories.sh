@@ -1,6 +1,7 @@
 #!/bin/sh
 
-curl 'http://lis.ly.gov.tw/lgcgi/lglaw?@298:1804289383:g:CN%3D0100*%20AND%20NO%3DA1%24%241__' | iconv -f big5 -c > data/index.html
+PORTAL='http://lis.ly.gov.tw/lgcgi/lglaw?@98:1804289383:g:CN%3D0100*%20AND%20NO%3DA1%24%241__'
+curl $PORTAL | iconv -f big5 -c > data/index.html
 
 grep '<TD class=cl1>' data/index.html | sed -e 's/.*cl1>//' |awk '{print "data/law/"$1"/index.html"}' > data/file.txt
 # magic: remove the last 2 underline shows every laws in the category.

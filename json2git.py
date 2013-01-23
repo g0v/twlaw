@@ -4,14 +4,25 @@
 import codecs
 import json
 import os
+import os.path
 import sys
+
+if len(sys.argv) != 3:
+    print "Usage: ./json2git.py law.json path/to/git/repo"
+    sys.exit(-1)
 
 law = json.load(file(sys.argv[1]))
 
+paths = os.path.dirname(sys.argv[1]).split('/')
+cat = paths[-2]
+output = '%s/%s.md' % (cat, paths[-1])
+print 'Generating', output
+
 os.chdir(sys.argv[2])
+if not os.path.exists(cat):
+    os.makedirs(cat)
 #os.system('git init')
 
-output = 'law.md'
 
 content = None
 for rev in law['revision']:
@@ -34,5 +45,4 @@ for rev in law['revision']:
     date = rev['date']
     if int(date[:date.index('.')]) < 1970:
         date = '1970.1.1'
-    # FIXME The date on github is one day earlier?
-    os.system('git commit --date "%sT23:00:00" -m "%s"' % (date, rev['date']))
+    os.system('git commit --date "%sT23:00:00" -m "%s %s"' % (date.encode('utf-8'), output[:-3], rev['date'].encode('utf-8')))

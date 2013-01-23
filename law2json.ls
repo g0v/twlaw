@@ -1,9 +1,11 @@
-require! {optimist, fs}
+require! {optimist, fs, mkdirp, path}
 
-{law, dir} = optimist.default(\dir, \data).argv
+{lawdir} = optimist.argv
+
+console.log "Generating #lawdir/log.json"
 
 fixup = -> it.replace /　/g, ' '
-html = fixup fs.readFileSync "#dir/#{law}-bytime.html", \utf8
+html = fixup fs.readFileSync "#lawdir/修正沿革.html", \utf8
 
 zhnumber = <[○ 一 二 三 四 五 六 七 八 九 十]>
 zhmap = {[c, i] for c, i in zhnumber}
@@ -27,6 +29,8 @@ parseDate = ->
     m = it.match /(.*)年(.*)月(.*)日/
     return [parseZHNumber(m.1) + 1911, parseZHNumber(m.2), parseZHNumber(m.3)] * \.
 
+remove_br = -> it - /\s*<br>\s*/ig - /\s+$/
+
 law = {}
 for line in html / '\n'
     match line
@@ -37,15 +41,22 @@ for line in html / '\n'
         law.revision.push {date: parseDate(that.1), content: {}}
     | /<FONT COLOR=8000FF SIZE=4>([^<]*)/ =>
         zh = that.1
-        m = zh.match /第(.*)條\s*(?:之(.*))?/
-        last_article = if m.2 then "#{parseZHNumber m.1}.#{parseZHNumber m.2}"
-                              else parseZHNumber m.1
+        if zh == ''
+            zh = \前言
+            last_article = 0
+        else
+            m = zh.match /第(.*)條\s*(?:之(.*))?/
+            last_article = if m.2 then "#{parseZHNumber m.1}.#{parseZHNumber m.2}"
+                                  else parseZHNumber m.1
         law.revision[*-1].content[last_article] = {num: zh}
+    | /<FONT COLOR=C000FF><\/FONT><TD>前言：\s*(.*)/ =>
+        law.revision[*-1].content[last_article].article = remove_br that.1
     | /<FONT COLOR=C000FF>條文<\/FONT><TD>\s*(.*)/ =>
         article = that.1 - /\s*<br>\s*/ig - /\s+$/
-        law.revision[*-1].content[last_article].article = article
+        law.revision[*-1].content[last_article].article = remove_br that.1
     | /<FONT COLOR=C000FF>理由<\/FONT><TD>\s*(.*)/ =>
-        reason = that.1 - /\s*<br>\s*/ig - /\s+$/
-        law.revision[*-1].content[last_article].reason = reason
+        law.revision[*-1].content[last_article].reason = remove_br that.1
 
-console.log JSON.stringify(law, '', 4)
+output = fs.createWriteStream "#lawdir/log.json"
+output.write JSON.stringify(law, '', 4)
+output.end!
