@@ -23,9 +23,9 @@ for rev in law['revision']:
 
     with codecs.open(output, 'w', 'utf-8') as out:
         keylist = content.keys()
-        keylist.sort()
+        keylist.sort(key=float)
         for index in keylist:
-            print >>out, u"* %s %s\n" % (index, content[index]['article'])
+            print >>out, u"* %s %s\n" % (content[index]['num'], content[index]['article'])
             if 'reason' in content[index]:
                 print >>out, u"> 釋：%s\n" % (content[index]['reason'])
 

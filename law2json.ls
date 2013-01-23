@@ -35,11 +35,15 @@ for line in html / '\n'
     | /<TR><TD COLSPAN=5><B>(.*)<\/B>/ =>
         law.revision ||= []
         law.revision.push {date: parseDate(that.1), content: {}}
-    | /<FONT COLOR=8000FF SIZE=4>(.*?)<\/FONT>/ =>
-        last_article = that.1
+    | /<FONT COLOR=8000FF SIZE=4>([^<]*)/ =>
+        zh = that.1
+        m = zh.match /第(.*)條\s*(?:之(.*))?/
+        last_article = if m.2 then "#{parseZHNumber m.1}.#{parseZHNumber m.2}"
+                              else parseZHNumber m.1
+        law.revision[*-1].content[last_article] = {num: zh}
     | /<FONT COLOR=C000FF>條文<\/FONT><TD>\s*(.*)/ =>
         article = that.1 - /\s*<br>\s*/ig - /\s+$/
-        law.revision[*-1].content[last_article] = {article}
+        law.revision[*-1].content[last_article].article = article
     | /<FONT COLOR=C000FF>理由<\/FONT><TD>\s*(.*)/ =>
         reason = that.1 - /\s*<br>\s*/ig - /\s+$/
         law.revision[*-1].content[last_article].reason = reason
