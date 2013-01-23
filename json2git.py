@@ -15,7 +15,8 @@ law = json.load(file(sys.argv[1]))
 
 paths = os.path.dirname(sys.argv[1]).split('/')
 cat = paths[-2]
-output = '%s/%s.md' % (cat, paths[-1])
+law_name = paths[-1]
+output = '%s/%s.md' % (cat, law_name)
 print 'Generating', output
 
 os.chdir(sys.argv[2])
@@ -45,4 +46,4 @@ for rev in law['revision']:
     date = rev['date']
     if int(date[:date.index('.')]) < 1970:
         date = '1970.1.1'
-    os.system('git commit --date "%sT23:00:00" -m "%s %s"' % (date.encode('utf-8'), output[:-3], rev['date'].encode('utf-8')))
+    os.system('git commit --date "%sT23:00:00" -m "%s %s"' % (date.encode('utf-8'), law_name, rev['date'].encode('utf-8')))
