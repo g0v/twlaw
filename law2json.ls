@@ -29,7 +29,7 @@ parseDate = ->
     m = it.match /(.*)年(.*)月(.*)日/
     return [parseZHNumber(m.1) + 1911, parseZHNumber(m.2), parseZHNumber(m.3)] * \.
 
-remove_br = -> it - /\s*<br>\s*/ig - /\s+$/
+fixBr = -> it - /\s*<br>\s*/ig - /\s+$/
 
 lawStatus = (dir) ->
     for basename in <[ 廢止 停止適用 ]>
@@ -56,12 +56,12 @@ for line in html / '\n'
                                   else parseZHNumber m.1
         law.revision[*-1].content[last_article] = {num: zh}
     | /<FONT COLOR=C000FF><\/FONT><TD>前言：\s*(.*)/ =>
-        law.revision[*-1].content[last_article].article = remove_br that.1
+        law.revision[*-1].content[last_article].article = fixBr that.1
     | /<FONT COLOR=C000FF>條文<\/FONT><TD>\s*(.*)/ =>
         article = that.1 - /\s*<br>\s*/ig - /\s+$/
-        law.revision[*-1].content[last_article].article = remove_br that.1
+        law.revision[*-1].content[last_article].article = fixBr that.1
     | /<FONT COLOR=C000FF>理由<\/FONT><TD>\s*(.*)/ =>
-        law.revision[*-1].content[last_article].reason = remove_br that.1
+        law.revision[*-1].content[last_article].reason = fixBr that.1
 
 output = fs.createWriteStream "#lawdir/log.json"
 output.write JSON.stringify(law, '', 4)
