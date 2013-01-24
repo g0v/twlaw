@@ -40,12 +40,12 @@ for line in html / '\n'
         law.revision ||= []
         law.revision.push {date: parseDate(that.1), content: {}}
     | /<FONT COLOR=8000FF SIZE=4>([^<]*)/ =>
-        zh = that.1
+        zh = that.1 - /\s/g;
         if zh == ''
             zh = \前言
             last_article = 0
         else
-            m = zh.match /第(.*)條\s*(?:之(.*))?/
+            m = zh.match /第(.*)條(?:之(.*))?/
             last_article = if m.2 then "#{parseZHNumber m.1}.#{parseZHNumber m.2}"
                                   else parseZHNumber m.1
         law.revision[*-1].content[last_article] = {num: zh}
