@@ -41,9 +41,11 @@ for line in html / '\n'
     match line
     | /<TR><TD COLSPAN=5><FONT COLOR=teal SIZE=4><b>(.*)<\/b>/ =>
         law_replay.name = that.1
+
     | /<TR><TD COLSPAN=5><B>(.*)<\/B>/ =>
         law_replay.revision ||= []
         law_replay.revision.push {date: parseDate(that.1), content: {}}
+
     | /<FONT COLOR=8000FF SIZE=4>([^<]*)/ =>
         zh = that.1 - /\s/g;
         if zh == ''
@@ -53,11 +55,20 @@ for line in html / '\n'
             m = zh.match /第(.*)條(?:之(.*))?/
             last = if m.2 then "#{parseZHNumber m.1}.#{parseZHNumber m.2}"
                                   else parseZHNumber m.1
-        law_replay.revision[*-1].content[last] = {num: zh}
+        law_replay.revision[*-1].content[last] ||= {}
+        law_replay.revision[*-1].content[last].num = zh
+
     | /<FONT COLOR=C000FF><\/FONT><TD>前言：\s*(.*)/ =>
         law_replay.revision[*-1].content[last].article = fixBr that.1
+
     | /<FONT COLOR=C000FF>條文<\/FONT><TD>\s*(.*)/ =>
-        law_replay.revision[*-1].content[last].article = fixBr that.1
+        article = fixBr that.1
+        # workaround a bad case in 行政-法務/監獄組織通則
+        if article is /^教化課掌理事項如左：/
+            last = 3
+            law_replay.revision[*-1].content[last].num = \第三條
+        law_replay.revision[*-1].content[last].article = article
+
     | /<FONT COLOR=C000FF>理由<\/FONT><TD>\s*(.*)/ =>
         law_replay.revision[*-1].content[last].reason = fixBr that.1
 

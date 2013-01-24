@@ -25,6 +25,10 @@ if not os.path.exists(cat):
 #os.system('git init')
 
 
+def system_or_cry(cmd):
+    if os.system(cmd) != 0:
+        print "ERROR:", cmd
+
 content = None
 for rev in law['revision']:
     if content is None:
@@ -41,9 +45,10 @@ for rev in law['revision']:
             if 'reason' in content[index]:
                 print >>out, u"> 釋：%s\n" % (content[index]['reason'])
 
-    os.system('git add %s' % output)
+    system_or_cry('git add %s' % output)
 
     date = rev['date']
     if int(date[:date.index('.')]) < 1970:
         date = '1970.1.1'
-    os.system('git commit --date "%sT23:00:00" -m "%s %s"' % (date.encode('utf-8'), law_name, rev['date'].encode('utf-8')))
+    system_or_cry('git commit --date "%sT23:00:00" -m "%s %s"' % (
+        date.encode('utf-8'), law_name, rev['date'].encode('utf-8')))
