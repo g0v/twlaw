@@ -31,7 +31,13 @@ parseDate = ->
 
 remove_br = -> it - /\s*<br>\s*/ig - /\s+$/
 
-law = {}
+lawStatus = (dir) ->
+    for basename in <[ 廢止 停止適用 ]>
+        if fs.existsSync "#dir/#basename.html"
+            return basename
+    return if fs.existsSync "#dir/全文.html" then \實施 else \未知
+
+law = {status: lawStatus lawdir}
 for line in html / '\n'
     match line
     | /<TR><TD COLSPAN=5><FONT COLOR=teal SIZE=4><b>(.*)<\/b>/ =>
