@@ -2,5 +2,5 @@
 
 while read file url; do
     mkdir -p `dirname $file`
-    curl "$url" | iconv -f big5 > $file
+    curl "$url" | iconv -f big5 | sed -e '1,/^<p class=heading>/d' > $file
 done < $1
