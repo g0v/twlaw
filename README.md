@@ -3,8 +3,6 @@ twlaw
 
 Organize Taiwan laws
 
-# Crawling
-
 ## 0. Update the first link in ./prepare_categories.sh manually
 1. http://lis.ly.gov.tw/lgcgi/lglaw -> 分類瀏覽 -> 任意一筆
 2. Copy the link in address bar to $PARTAL in prepare_categories.sh
@@ -13,7 +11,7 @@ Organize Taiwan laws
     % ./prepare_categories.sh  # probably need to update the link manually
     % ./fetcher.sh data/file-link.txt
 
-## 2. Fetch laws
+## 2. Fetch law pages
 
 Fetch a single category
 
@@ -43,5 +41,5 @@ For single law
 ## 4. Commit to git
     % (mkdir output/law && cd output/law && git init)
     % for dir in `find data/law -type d -depth 2`; do
-          ./json2git.py $dir/log.json output/law
+          ./json2git.py $dir/law_replay.json output/law
       done

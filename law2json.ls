@@ -2,9 +2,10 @@ require! {optimist, fs, mkdirp, path}
 
 {lawdir} = optimist.argv
 
-console.log "Generating #lawdir/log.json"
+console.log "Generating #lawdir/{law,law_replay}.json"
 
 fixup = -> it.replace /　/g, ' '
+fixBr = -> it - /\s*<br>\s*/ig - /\s+$/
 html = fixup fs.readFileSync "#lawdir/修正沿革.html", \utf8
 
 zhnumber = <[○ 一 二 三 四 五 六 七 八 九 十]>
@@ -29,40 +30,42 @@ parseDate = ->
     m = it.match /(.*)年(.*)月(.*)日/
     return [parseZHNumber(m.1) + 1911, parseZHNumber(m.2), parseZHNumber(m.3)] * \.
 
-fixBr = -> it - /\s*<br>\s*/ig - /\s+$/
-
 lawStatus = (dir) ->
     for basename in <[ 廢止 停止適用 ]>
         if fs.existsSync "#dir/#basename.html"
             return basename
     return if fs.existsSync "#dir/全文.html" then \實施 else \未知
 
-law = {status: lawStatus lawdir}
+law_replay = {status: lawStatus lawdir}
 for line in html / '\n'
     match line
     | /<TR><TD COLSPAN=5><FONT COLOR=teal SIZE=4><b>(.*)<\/b>/ =>
-        law.name = that.1
+        law_replay.name = that.1
     | /<TR><TD COLSPAN=5><B>(.*)<\/B>/ =>
-        law.revision ||= []
-        law.revision.push {date: parseDate(that.1), content: {}}
+        law_replay.revision ||= []
+        law_replay.revision.push {date: parseDate(that.1), content: {}}
     | /<FONT COLOR=8000FF SIZE=4>([^<]*)/ =>
         zh = that.1 - /\s/g;
         if zh == ''
             zh = \前言
-            last_article = 0
+            last = 0
         else
             m = zh.match /第(.*)條(?:之(.*))?/
-            last_article = if m.2 then "#{parseZHNumber m.1}.#{parseZHNumber m.2}"
+            last = if m.2 then "#{parseZHNumber m.1}.#{parseZHNumber m.2}"
                                   else parseZHNumber m.1
-        law.revision[*-1].content[last_article] = {num: zh}
+        law_replay.revision[*-1].content[last] = {num: zh}
     | /<FONT COLOR=C000FF><\/FONT><TD>前言：\s*(.*)/ =>
-        law.revision[*-1].content[last_article].article = fixBr that.1
+        law_replay.revision[*-1].content[last].article = fixBr that.1
     | /<FONT COLOR=C000FF>條文<\/FONT><TD>\s*(.*)/ =>
-        article = that.1 - /\s*<br>\s*/ig - /\s+$/
-        law.revision[*-1].content[last_article].article = fixBr that.1
+        law_replay.revision[*-1].content[last].article = fixBr that.1
     | /<FONT COLOR=C000FF>理由<\/FONT><TD>\s*(.*)/ =>
-        law.revision[*-1].content[last_article].reason = fixBr that.1
+        law_replay.revision[*-1].content[last].reason = fixBr that.1
 
-output = fs.createWriteStream "#lawdir/log.json"
-output.write JSON.stringify(law, '', 4)
-output.end!
+law_replay.revision.sort (a, b) -> a.date.localeCompare b.date
+fs.writeFileSync "#lawdir/law_replay.json", JSON.stringify(law_replay, '', 4)
+
+law = status: law_replay.status, content: {}
+for rev in law_replay.revision
+    for num, item of rev.content
+        law.content[num] = item
+fs.writeFileSync "#lawdir/law.json", JSON.stringify(law, '', 4)
