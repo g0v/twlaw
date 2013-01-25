@@ -75,7 +75,7 @@ for line in html / '\n'
 law_replay.revision.sort (a, b) -> a.date.localeCompare b.date
 fs.writeFileSync "#lawdir/law_replay.json", JSON.stringify(law_replay, '', 4)
 
-law = status: law_replay.status, content: {}
+law = name: law_replay.name, status: law_replay.status, content: {}
 for rev in law_replay.revision
     for num, item of rev.content
         law.content[num] = item
