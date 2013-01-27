@@ -20,4 +20,5 @@ dependencies: {}
 devDependencies:
   LiveScript: \1.1.x
   mongodb: \1.2.x
+  express: \3.1.x
 optionalDependencies: {}

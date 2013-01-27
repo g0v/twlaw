@@ -1,4 +1,4 @@
-require! {express, jade, http, url, mongodb}
+require! {express, mongodb}
 
 mongo_config =
     hostname: \ds049237.mongolab.com
@@ -18,15 +18,21 @@ generate_mongo_url = (obj) ->
   else
     return "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db
 
-mongourl = generate_mongo_url mongo
+mongourl = generate_mongo_url mongo_config
 
-list_doc = (type, cb) ->
+list_doc = (type, param, cb) ->
+    unless type?
+        cb!
+        return
+
     err, db <- mongodb.Db.connect mongourl
     err, coll <- db.collection type
-    err, docs <- coll.find({}, {+name, +status, -_id}).toArray
+
+    fields = {+name, +status, -_id}
+    err, docs <- coll.find(param ? {}, fields).toArray
     cb docs
 
-query_doc = (type, name, cb) ->
+query_doc = (type, name, param, cb) ->
     err, db <- mongodb.Db.connect mongourl
     err, coll <- db.collection type
     err, doc <- coll.find({name}, {-_id}).nextObject
@@ -35,21 +41,25 @@ query_doc = (type, name, cb) ->
 port = (process.env.VMC_APP_PORT || 3000)
 host = (process.env.VCAP_APP_HOST || 'localhost')
 
-http.createServer((req, res) ->
-    path = url.parse(req.url).pathname
-    if path.match(/^\/([^/]+)\/(.*)/)
-        type = decodeURIComponent that.1
-        name = decodeURIComponent that.2
-        console.log type + ' ... ' + name
-        if name == 'all'
-            list_doc type, (docs) ->
-                res.writeHead 200, {'Content-Type': 'application/json'}
-                res.end JSON.stringify docs
-        else
-            query_doc type, name, (doc) ->
-                res.writeHead 200, {'Content-Type': 'application/json'}
-                res.end JSON.stringify doc
-    else
-        res.writeHead 200, {'Content-Type': 'text/plain'}
-        res.end 'Hello World!\n'
-).listen port, host
+app = express!
+
+renderJson = (res, obj) ->
+    res.writeHead 200,
+        'Content-Type': 'application/json'
+        'Access-Control-Allow-Origin': '*'
+    res.end JSON.stringify obj
+
+app.get '/:type/:name', (req, res) ->
+    query_doc req.params.type, decodeURIComponent(req.params.name), req.query, (doc) ->
+        renderJson res, doc
+
+app.get '/:type', (req, res) ->
+    list_doc req.params.type, req.query, (docs) ->
+        renderJson res, doc ? {error: 'not found'}
+
+app.get '/', (req, res) ->
+    res.sendfile 'static/index.html'
+
+app.use '/static', express.static "#__dirname/static"
+
+app.listen port

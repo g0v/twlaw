@@ -7,3 +7,8 @@
 
 ## Run HTTP frontend
     % npm run prepublish && node app.js
+
+
+# Push local db to production
+mongodump -d db &&
+mongorestore -h ds049237.mongolab.com:49237 -d twlaw -u admin -p $PASSWD dump/db --drop
