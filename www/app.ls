@@ -1,19 +1,12 @@
-require! {http, url, mongodb}
+require! {express, jade, http, url, mongodb}
 
-var mongo
-
-if process.env.VCAP_SERVICES
-    env = JSON.parse process.env.VCAP_SERVICES
-    mongo = env[\mongodb-2.0'][0][\credentials]
-else
-    mongo = {
-        hostname: \ds049237.mongolab.com,
-        port: 49237,
-        username: \g0v,
-        password: \readonly,
-        name: "",
-        db: \twlaw
-    }
+mongo_config =
+    hostname: \ds049237.mongolab.com
+    port: 49237
+    username: \g0v
+    password: \readonly
+    name: ''
+    db: \twlaw
 
 generate_mongo_url = (obj) ->
   obj.hostname = (obj.hostname || 'localhost')
