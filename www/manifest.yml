@@ -1,0 +1,16 @@
+--- 
+applications: 
+- framework: node
+  runtime: node
+  url: twlaw.${target-base}
+  instances: 1
+  name: twlaw
+  path: .
+  memory: 64M
+
+- env:
+  mongodb_host: ds049237.mongolab.com
+  mongodb_port: 49237
+  mongodb_username: g0v
+  mongodb_password: readonly
+  mongodb_db: twlaw
