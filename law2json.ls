@@ -31,6 +31,14 @@ lawStatus = (dir) ->
             return basename
     return if fs.existsSync "#dir/全文.html" then \實施 else \未知
 
+objToSortedArray = (obj) ->
+    keys = for key, _ of obj
+        key
+    keys.sort (a, b) -> a - b
+    x = for key in keys
+        obj[key]
+    return x
+
 parseHTML = (lawdir) ->
     law_history = {status: lawStatus lawdir}
     html = fixup fs.readFileSync "#lawdir/修正沿革.html", \utf8
@@ -52,8 +60,11 @@ parseHTML = (lawdir) ->
                 m = zh.match /第(.*)條(?:之(.*))?/
                 last = if m.2 then "#{parseZHNumber m.1}.#{parseZHNumber m.2}"
                                       else parseZHNumber m.1
+            # Store in Object for data integrity.  It will be reformed by objToSortedArray.
             law_history.revision[*-1].content[last] ||= {}
-            law_history.revision[*-1].content[last].num = zh
+            law_history.revision[*-1].content[last]
+                ..num = last
+                ..zh = zh
 
         | /<FONT COLOR=C000FF><\/FONT><TD>前言：\s*(.*)/ =>
             law_history.revision[*-1].content[last].article = fixBr that.1
@@ -67,9 +78,11 @@ parseHTML = (lawdir) ->
     law_history.revision.sort (a, b) -> a.date.localeCompare b.date
 
     law = name: law_history.name, status: law_history.status, content: {}
-    for rev in law_history.revision
+    for rev, i in law_history.revision
         for num, item of rev.content
             law.content[num] = item
+        rev.content = objToSortedArray rev.content
+    law.content = objToSortedArray law.content
     return {law, law_history}
 
 
