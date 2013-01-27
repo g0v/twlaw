@@ -32,16 +32,16 @@ lawStatus = (dir) ->
     return if fs.existsSync "#dir/全文.html" then \實施 else \未知
 
 parseHTML = (lawdir) ->
-    law_replay = {status: lawStatus lawdir}
+    law_history = {status: lawStatus lawdir}
     html = fixup fs.readFileSync "#lawdir/修正沿革.html", \utf8
     for line in html / '\n'
         match line
         | /<TR><TD COLSPAN=5><FONT COLOR=teal SIZE=4><b>(.*)<\/b>/ =>
-            law_replay.name = that.1
+            law_history.name = that.1
 
         | /<TR><TD COLSPAN=5><B>(.*)<\/B>/ =>
-            law_replay.revision ||= []
-            law_replay.revision.push {date: parseDate(that.1), content: {}}
+            law_history.revision ||= []
+            law_history.revision.push {date: parseDate(that.1), content: {}}
 
         | /<FONT COLOR=8000FF SIZE=4>([^<]*)/ =>
             zh = that.1 - /\s/g;
@@ -52,32 +52,37 @@ parseHTML = (lawdir) ->
                 m = zh.match /第(.*)條(?:之(.*))?/
                 last = if m.2 then "#{parseZHNumber m.1}.#{parseZHNumber m.2}"
                                       else parseZHNumber m.1
-            law_replay.revision[*-1].content[last] ||= {}
-            law_replay.revision[*-1].content[last].num = zh
+            law_history.revision[*-1].content[last] ||= {}
+            law_history.revision[*-1].content[last].num = zh
 
         | /<FONT COLOR=C000FF><\/FONT><TD>前言：\s*(.*)/ =>
-            law_replay.revision[*-1].content[last].article = fixBr that.1
+            law_history.revision[*-1].content[last].article = fixBr that.1
 
         | /<FONT COLOR=C000FF>條文<\/FONT><TD>\s*(.*)/ =>
-            law_replay.revision[*-1].content[last].article = fixBr that.1
+            law_history.revision[*-1].content[last].article = fixBr that.1
 
         | /<FONT COLOR=C000FF>理由<\/FONT><TD>\s*(.*)/ =>
-            law_replay.revision[*-1].content[last].reason = fixBr that.1
+            law_history.revision[*-1].content[last].reason = fixBr that.1
 
-    law_replay.revision.sort (a, b) -> a.date.localeCompare b.date
+    law_history.revision.sort (a, b) -> a.date.localeCompare b.date
 
-    law = name: law_replay.name, status: law_replay.status, content: {}
-    for rev in law_replay.revision
+    law = name: law_history.name, status: law_history.status, content: {}
+    for rev in law_history.revision
         for num, item of rev.content
             law.content[num] = item
-    return {law, law_replay}
+    return {law, law_history}
 
 
+{outdir} = optimist.argv
 for lawdir in optimist.argv._
-    console.log "Generating #lawdir/{law,law_replay}.json"
     try
-        {law, law_replay} = parseHTML lawdir
-        fs.writeFileSync "#lawdir/law_replay.json", JSON.stringify(law_replay, '', 4)
-        fs.writeFileSync "#lawdir/law.json", JSON.stringify(law, '', 4)
-    catch {msg}
-        console.error "ERROR: #lawdir (#msg)"
+        m = lawdir.match /([^/]+\/[^/]+)\/?$/
+        dir = "#outdir/#{m.1}"
+        console.log "Generating #dir/{law,law_history}.json"
+
+        mkdirp.sync dir
+        {law, law_history} = parseHTML lawdir
+        fs.writeFileSync "#dir/law_history.json", JSON.stringify law_history
+        fs.writeFileSync "#dir/law.json", JSON.stringify law
+    catch
+        console.error "ERROR: #lawdir (#e)"

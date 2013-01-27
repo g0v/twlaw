@@ -3,23 +3,20 @@ twlaw
 
 Organize Taiwan laws
 
-## Parse law HTML
+## HTML -> JSON
 
 For single law
 
-    % npm run prepublish && ./node_modules/.bin/lsc law2json.ls --lawdir data/law/憲法/中華民國憲法
+    % npm run prepublish && ./node_modules/.bin/lsc law2json.ls --outdir output/json/law data/law/憲法/中華民國憲法
 
 ..or all
 
-    % npm run prepublish
-    % for law in `find data/law -type d -depth 2`; do
-          ./node_modules/.bin/lsc law2json.ls --lawdir $law
-      done
+    % npm run prepublish && find data/law -type d -depth 2 -exec ./node_modules/.bin/lsc law2json.ls --outdir output/json/law {} +
 
-## Commit to git
+## JSON -> Markdown -> git
     % (mkdir output/law && cd output/law && git init)
     % for dir in `find data/law -type d -depth 2`; do
-          ./json2git.py $dir/law_replay.json output/law
+          ./json2git.py $dir/law_history.json output/law
       done
 
 ## Crawl the source
