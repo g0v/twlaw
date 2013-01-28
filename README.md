@@ -15,7 +15,7 @@ For single law
 
 ## JSON -> Markdown -> git
     % (mkdir output/law && cd output/law && git init)
-    % for dir in `find data/law -type d -depth 2`; do
+    % for dir in `find output/json/law -type d -depth 2`; do
           ./json2git.py $dir/law_history.json output/law
       done
 

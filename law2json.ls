@@ -81,7 +81,6 @@ parseHTML = (lawdir) ->
     for rev, i in law_history.revision
         for num, item of rev.content
             law.content[num] = item
-        rev.content = objToSortedArray rev.content
     law.content = objToSortedArray law.content
     return {law, law_history}
 
