@@ -1,17 +1,26 @@
 <!doctype html>
 <html>
-  <head>
-    <script src="static/project.js"></script>
-  </head>
   <body>
-    <h2>JSON</h2>
+    <h2>API</h2>
     <ul>
-        <li><a href="/law">/law</a></li>
-        <li><a href="/law?status=實施">/law?status=實施</a></li>
-        <li><a href="/law/中華民國憲法">/law/中華民國憲法</a></li>
-    </ul>
-    Note that all these queries return with "Access-Control-Allow-Origin: *" so that cross domain access is allowed.
+        <li>Law listing: <a href="/law">/law</a>
+        <ul>
+            <li>skip: int</li>
+            <li>limit: int, 0 if unlimited</li>
+        </ul>
 
+        <li>Law detail: <a href="/law/中華民國憲法">/law/中華民國憲法</a></li>
+
+        <li>Company listing: <a href="/company">/company</a>
+        <ul>
+            <li>skip: int</li>
+            <li>limit: int, 0 if unlimited</li>
+        </ul>
+
+        <li>Company detail: <a href="/company/壹傳媒傳訊播放股份有限公司">/company/壹傳媒傳訊播放股份有限公司</a></li>
+    </ul>
+
+    Note that all these queries return with "Access-Control-Allow-Origin: *" so that cross domain access is allowed.
 
     <h2>Source Code</h2>
     <ul>

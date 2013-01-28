@@ -1,7 +1,7 @@
 --- 
 applications: 
 - framework: node
-  runtime: node
+  runtime: node08
   url: twlaw.${target-base}
   instances: 1
   name: twlaw
