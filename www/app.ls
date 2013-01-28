@@ -1,4 +1,5 @@
-require! {express, mongodb}
+require! {express, mongodb, fs}
+md = require('node-markdown').Markdown;
 
 mongodb_config =
     'law':
@@ -57,7 +58,9 @@ app.get '/:type', (req, res) ->
         renderJson res, docs ? {error: 'not found'}
 
 app.get '/', (req, res) ->
-    res.sendfile 'static/index.html'
+    html = fs.readFileSync \views/api.md, \utf8
+    res.render 'home.jade', body: md(html, true)
+
 
 app.use express.static "#__dirname/static"
 
