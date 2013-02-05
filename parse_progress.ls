@@ -1,5 +1,7 @@
 require! {optimist, fs, mkdirp}
 
+{perline} = optimist.argv
+
 translation = {
     \系統號 : \id
     \提案類別 : \proposal_type
@@ -44,6 +46,8 @@ add_record = (record) ->
     else
         record.status = \new
 
+    if perline
+        console.log JSON.stringify record
     records.push record
 
 current_record = null
@@ -65,4 +69,5 @@ for file in fs.readdirSync dir when file is /\.txt$/
 
 add_record current_record
 
-console.log JSON.stringify records
+if not perline
+    console.log JSON.stringify records
