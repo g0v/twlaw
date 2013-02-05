@@ -68,4 +68,7 @@ Currently it's done manually.
 
 ## Parsing (to JSON)
 
-    % ./node_modules/.bin/lsc parse_progress.ls > progress.json
+    % ./node_modules/.bin/lsc parse_progress.ls --ad 8 > progress.json
+
+    # one record per line for mongodbimport
+    % ./node_modules/.bin/lsc parse_progress.ls --ad 8 --newline > progress.json

@@ -1,6 +1,6 @@
 require! {optimist, fs, mkdirp}
 
-{perline} = optimist.argv
+{ad, perline} = optimist.argv
 
 translation = {
     \系統號 : \id
@@ -16,7 +16,7 @@ translation = {
 }
 
 
-dir = 'data/progress'
+dir = "data/progress/#ad"
 records = []
 
 split_lines = (str) ->
@@ -25,14 +25,20 @@ split_lines = (str) ->
     return lines
 
 add_record = (record) ->
+    if record.sitting.match /(.*)屆(.*)期(.*)次/
+        record.ad = parseInt that.1
+        record.session = parseInt that.2
+        record.sitting = parseInt that.3
+
     record.proposer = []
     record.petitioner = []
-    for line in split_lines record.proposed_by
-        [_, name, role] = line.match /(.*)\((.*)\)/
-        if role is '主提案'
-            record.proposer.push name
-        else if role is '連署提案'
-            record.petitioner.push name
+    if record.proposed_by?
+        for line in split_lines record.proposed_by
+            [_, name, role] = line.match /(.*)\((.*)\)/
+            if role is '主提案'
+                record.proposer.push name
+            else if role is '連署提案'
+                record.petitioner.push name
         delete record.proposed_by
 
     if record.progress?
@@ -42,7 +48,8 @@ add_record = (record) ->
         for line in events
             [date, status] = line / /\s+/
             record.progress.push {date, status}
-        record.status = record.progress[*-1].status
+        record.status = record.progress[*-1]?.status ? \new
+        record.status = \二讀 if record.status is /^二讀/
     else
         record.status = \new
 
