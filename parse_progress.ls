@@ -26,9 +26,9 @@ split_lines = (str) ->
 
 add_record = (record) ->
     if record.sitting.match /(.*)屆(.*)期(.*)次/
-        record.ad = parseInt that.1
-        record.session = parseInt that.2
-        record.sitting = parseInt that.3
+        record.ad = parseInt that.1, 10
+        record.session = parseInt that.2, 10
+        record.sitting = parseInt that.3, 10
 
     record.proposer = []
     record.petitioner = []
