@@ -17,14 +17,37 @@ translation = {
 dir = 'data/progress'
 records = []
 
-add_record = (record) ->
-    record.proposed_by /= ''
-    record.proposed_by.pop! if record.proposed_by[*-1] === ''
+split_lines = (str) ->
+    lines = str / ''
+    lines.pop! if lines[*-1] === ''
+    return lines
 
-    # TODO organize record.progress
+add_record = (record) ->
+    record.proposer = []
+    record.petitioner = []
+    for line in split_lines record.proposed_by
+        [_, name, role] = line.match /(.*)\((.*)\)/
+        if role is '主提案'
+            record.proposer.push name
+        else if role is '連署提案'
+            record.petitioner.push name
+        delete record.proposed_by
+
+    if record.progress?
+        # TODO follow the link for detail, if that helps
+        [link, ...events] = split_lines record.progress
+        record.progress = []
+        for line in events
+            [date, status] = line / /\s+/
+            record.progress.push {date, status}
+        record.status = record.progress[*-1].status
+    else
+        record.status = \new
+
     records.push record
 
 current_record = null
+last_field = null
 for file in fs.readdirSync dir when file is /\.txt$/
     text = fs.readFileSync "#dir/#file", \utf8
     for line in text / '\n'
@@ -36,8 +59,9 @@ for file in fs.readdirSync dir when file is /\.txt$/
             [_, field, value] = that
             field = translation[field]
             current_record[field] = value
-        | /^ {10,}(.*)/ =>
-            current_record[\proposed_by] += that.1
+            last_field = field
+        | /^ {5,}(.*)/ =>
+            current_record[last_field] += that.1 - /^\s+/
 
 add_record current_record
 
