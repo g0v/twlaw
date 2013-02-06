@@ -12,7 +12,7 @@ translation = {
     \提案日期 : \proposal_date
     \提案編號 : \proposal_id
     \提案委員/機關 : \proposed_by
-    \審議進度 : \progress
+    \審議進度 : \progress_tmp
 }
 
 
@@ -41,17 +41,16 @@ add_record = (record) ->
                 record.petitioner.push name
         delete record.proposed_by
 
-    if record.progress?
+    record.progress = [{date: record.proposal_date, status: \new}]
+    if record.progress_tmp?
         # TODO follow the link for detail, if that helps
-        [link, ...events] = split_lines record.progress
-        record.progress = []
+        [link, ...events] = split_lines record.progress_tmp
         for line in events
             [date, status] = line / /\s+/
             record.progress.push {date, status}
-        record.status = record.progress[*-1]?.status ? \new
+        record.status = record.progress[*-1].status
         record.status = \二讀 if record.status is /^二讀/
-    else
-        record.status = \new
+        delete record.progress_tmp
 
     if perline
         console.log JSON.stringify record
