@@ -2,12 +2,13 @@ Organize Taiwan laws
 ====================
 
 This repo aims to make Taiwan laws easy to process by computer geeks.  The output includes:
+
 1. Law article in JSON
 2. Law change history in JSON
 3. Script to create Git repo of laws
 4. Progress of law motion in JSON
 
-# Law to JSON
+# Law to JSON (and git repo)
 
 ## Extract law content and change history (修正沿革/立法紀錄.html -> JSON)
 
