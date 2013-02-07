@@ -1,4 +1,4 @@
-require! {optimist, fs, mkdirp}
+require! {optimist, fs}
 
 {ad, perline} = optimist.argv
 
