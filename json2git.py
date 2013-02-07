@@ -50,5 +50,17 @@ for rev in law['revision']:
     date = rev['date']
     if int(date[:date.index('.')]) < 1970:
         date = '1970.1.1'
-    system_or_cry('git commit --date "%sT23:00:00" -m "%s %s"' % (
-        date.encode('utf-8'), law_name, rev['date'].encode('utf-8')))
+
+    detail = ''
+    if 'reference' in rev and len(rev['reference']) > 0:
+        refs = rev['reference']
+        detail = u'委員會: %s\n\n' % refs[0]['committee']
+        for ref in refs:
+            detail += "%s: %s (%s)\n" % (ref['progress'], ref['desc'], ref['link'])
+            if 'misc' in ref:
+                detail += "  ref: %s %s" % (ref['misc']['content'], ref['misc']['link'])
+
+    msg = "%s %s" % (law_name, rev['date'].encode('utf-8'))
+    if detail:
+        msg += '\n\n' + detail.encode('utf-8')
+    system_or_cry('git commit --date "%sT23:00:00" -m "%s"' % (date.encode('utf-8'), msg))
