@@ -1,4 +1,5 @@
 require! {optimist, fs, mkdirp, path}
+require! './lib/parse'
 
 fixup = -> it.replace /　/g, ' '
 fixBr = -> it - /\s*<br>\s*/ig - /\s+$/
@@ -39,7 +40,7 @@ objToSortedArray = (obj) ->
         obj[key]
     return x
 
-parseHTML = (lawdir) ->
+parseHTML = (lawdir, changes_by_date) ->
     law_history = {status: lawStatus lawdir}
     html = fixup fs.readFileSync "#lawdir/修正沿革.html", \utf8
     for line in html / '\n'
@@ -49,7 +50,8 @@ parseHTML = (lawdir) ->
 
         | /<TR><TD COLSPAN=5><B>(.*)<\/B>/ =>
             law_history.revision ||= []
-            law_history.revision.push {date: parseDate(that.1), content: {}}
+            date = parseDate(that.1)
+            law_history.revision.push {date: date, content: {}, reference: changes_by_date[date]}
 
         | /<FONT COLOR=8000FF SIZE=4>([^<]*)/ =>
             zh = that.1 - /\s/g;
@@ -93,8 +95,10 @@ for lawdir in optimist.argv._
         console.log "Generating #dir/{law,law_history}.json"
 
         mkdirp.sync dir
-        {law, law_history} = parseHTML lawdir
-        fs.writeFileSync "#dir/law_history.json", JSON.stringify law_history
-        fs.writeFileSync "#dir/law.json", JSON.stringify law
+        changes_by_date = parse.parseChanges lawdir
+        {law, law_history} = parseHTML lawdir, changes_by_date
+        fs.writeFileSync "#dir/law_history.json", JSON.stringify law_history, '', 2
+        fs.writeFileSync "#dir/law.json", JSON.stringify law, '', 2
+        fs.writeFileSync "#dir/changes.json", JSON.stringify changes_by_date, '', 2
     catch
         console.error "ERROR: #lawdir (#e)"

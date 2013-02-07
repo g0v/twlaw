@@ -4,7 +4,14 @@ require! {optimist, fs, mkdirp}
 
 strip_tags = -> it - /<[^<]+>/g;
 
-parse_log = (content) ->
+parseChanges = ->
+    try
+        internalParseChanges it
+    catch
+        {}
+
+internalParseChanges = (lawdir) ->
+    content = fs.readFileSync "#lawdir/立法紀錄.html", \utf8
     [_, _, ...parts] = content / '<TR>'
 
     last_committee = void
@@ -18,7 +25,8 @@ parse_log = (content) ->
                                  then strip_tags committee
                                  else \N/A
         if source is /<TD>.*:(\d+) <a .*(http\S*).*>(.*)<\/nobr>/
-            date = that.1
+            [_, y, m, d] = that.1.match /(\d+)(\d\d)(\d\d)$/
+            date = [1911 + parseInt(y, 10), m, d] * \.
             record = {link: that.2, desc: that.3, progress: strip_tags(progress), committee: last_committee}
         else
             date = 'unknown'
@@ -29,10 +37,4 @@ parse_log = (content) ->
         records[date].push record
     records
 
-for lawdir in optimist.argv._
-    try
-        m = lawdir.match /([^/]+\/[^/]+)\/?$/
-        dir = "#outdir/#{m.1}"
-        content = fs.readFileSync "#lawdir/立法紀錄.html", \utf8
-        mkdirp dir
-        fs.writeFileSync "#dir/changes.json" JSON.stringify parse_log(content), '', 2
+module.exports = {parseChanges}

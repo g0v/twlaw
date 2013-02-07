@@ -5,23 +5,19 @@ Organize Taiwan laws
 
 # Law to JSON
 
-## Extract law content and change history (修正沿革.html -> JSON)
+## Extract law content and change history (修正沿革/立法紀錄.html -> JSON)
 
 For single law
 
-    % npm run prepublish && ./node_modules/.bin/lsc law2json.ls --outdir output/json/law data/law/憲法/中華民國憲法
+    % npm run prepublish && ./node_modules/.bin/lsc law2json.ls --outdir output/law/json data/law/憲法/中華民國憲法
 
 ..or all
 
-    % npm run prepublish && find data/law -type d -depth 2 -exec ./node_modules/.bin/lsc law2json.ls --outdir output/json/law {} +
-
-
-## Parse 立法紀錄.html
-    % npm run prepublish && find data/law -type d -depth 2 -exec ./node_modules/.bin/lsc parse_log.ls --outdir output/json/law {} +
+    % npm run prepublish && find data/law -type d -depth 2 -exec ./node_modules/.bin/lsc law2json.ls --outdir output/law/json {} +
 
 ## Build git commits (JSON -> Markdown -> git)
     % (mkdir output/law && cd output/law && git init)
-    % for dir in `find output/json/law -type d -depth 2`; do
+    % for dir in `find output/law/json -type d -depth 2`; do
           ./json2git.py $dir/law_history.json output/law
       done
 
