@@ -32,7 +32,7 @@ The source pages are committed so that we can check for updates.  But if you
 need to fetch the source yourself, here is the instruction
 
 ### 0. Update the first link in ./prepare_categories.sh manually
-1. http://lis.ly.gov.tw/lgcgi/lglaw -> 分類瀏覽 -> 任意一筆
+1. [http://lis.ly.gov.tw/lgcgi/lglaw](http://lis.ly.gov.tw/lgcgi/lglaw) -> 分類瀏覽 -> 任意一筆
 2. Copy the link in address bar to $PORTAL in prepare_categories.sh
 
 ### 1. Crawls the portal to prepare category links.
