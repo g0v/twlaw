@@ -33,7 +33,7 @@ need to fetch the source yourself, here is the instruction
 
 ### 0. Update the first link in ./prepare_categories.sh manually
 1. http://lis.ly.gov.tw/lgcgi/lglaw -> 分類瀏覽 -> 任意一筆
-2. Copy the link in address bar to $PARTAL in prepare_categories.sh
+2. Copy the link in address bar to $PORTAL in prepare_categories.sh
 
 ### 1. Crawls the portal to prepare category links.
     % ./prepare_categories.sh  # probably need to update the link manually
