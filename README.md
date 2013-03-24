@@ -54,6 +54,20 @@ Fetch a single category
           ./fetcher.sh $cat/file-link.tsv
       done
 
+### 3. Fetch law pages (all revision)
+
+Generate file-link-all-revision.tsv for single category
+
+    % npm run prepublish && ./node_modules/.bin/lsc prepare_law_all_revision.ls --cat 憲法 --dir data/law
+    % ./fetcher.sh -r data/law/憲法/file-link-all-revision.tsv
+
+..or for all categories
+
+    % npm run prepublish
+    % for cat in data/law/*; do
+          ./node_modules/.bin/lsc prepare_law_all_revision.ls --cat `basename $cat` --dir data/law
+          ./fetcher.sh -r $cat/file-link-all-revision.tsv
+      done
 
 # Progress of law proposals
 
