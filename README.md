@@ -21,7 +21,7 @@ For single law
     % npm run prepublish && find data/law -type d -depth 2 -exec ./node_modules/.bin/lsc law2json.ls --outdir output/law/json {} +
 
 ## Build git commits (JSON -> Markdown -> git)
-    % (mkdir output/law && cd output/law && git init)
+    % (cd output/law && git init)
     % for dir in `find output/law/json -type d -depth 2`; do
           ./json2git.py $dir/law_history.json output/law
       done
@@ -77,13 +77,13 @@ Currently it's done manually.
 
 0. Open http://lis.ly.gov.tw/lgcgi/ttsweb?@0:0:1:lgmempropg08@@0
 1. 選第一個會期、到最後一個, then search
-2. click 詳目顯示
+2. click 詳目顯示、依提案日期「遞增」
 3. open javascript console
     1. localStorage['page'] = 1
     2. document.querySelector('select[name="_TTS.DISPLAYPAGE"]').options[0].value = 200; document.querySelector('input[name="_TTS.PGTOP"]').value = 200*(localStorage['page']-1)+1; localStorage['page']++; document.querySelector('input[name="_IMG_顯示結果"]').click();
     3. document.querySelector('input[name="_IMG_本頁全部"]').click();
     4. repeat 2 until you got every pages.
-    5. organize (e.g. rename) local files.
+    5. rename downloads to data/progress/8/ad-8-$N.txt
 
 ## Parsing (to JSON)
 
