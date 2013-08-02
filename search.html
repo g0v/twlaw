@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>Example</title>
+  </head>
+  <body>
+    <input type="text" id="q"></input>
+    <button id="search">找法律名</button>
+    <script>
+      document.getElementById('search').onclick = function() {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+            console.log(JSON.parse(xhr.responseText));
+          }
+        };
+        var q = document.getElementById('q').value;
+        xhr.open('GET', 'https://api.github.com/search/code?q=' +
+                        '@tw-law-corpus+@victorhsieh+extension:md+' + encodeURIComponent(q));
+        xhr.setRequestHeader('Accept', 'application/vnd.github.preview.text-match+json');
+        xhr.send();
+      };
+    </script>
+  </body>
+</html>
