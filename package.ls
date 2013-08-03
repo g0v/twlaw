@@ -21,4 +21,5 @@ devDependencies:
   LiveScript: \1.1.x
   optimist: \0.3.x
   mkdirp: \0.3.x
+  walk: \2.2.x
 optionalDependencies: {}
