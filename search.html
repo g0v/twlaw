@@ -1,24 +1,19 @@
-<html>
+<!doctype html>
+<html ng-app="app">
   <head>
     <title>Example</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="lib/search.js"></script>
   </head>
-  <body>
-    <input type="text" id="q"></input>
-    <button id="search">找法律名</button>
-    <script>
-      document.getElementById('search').onclick = function() {
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState === 4) {
-            console.log(JSON.parse(xhr.responseText));
-          }
-        };
-        var q = document.getElementById('q').value;
-        xhr.open('GET', 'https://api.github.com/search/code?q=' +
-                        '@tw-law-corpus+@victorhsieh+extension:md+' + encodeURIComponent(q));
-        xhr.setRequestHeader('Accept', 'application/vnd.github.preview.text-match+json');
-        xhr.send();
-      };
-    </script>
+  <body ng-controller="MainCtrl">
+    <label>Search</label>
+    <input type="text" ng-model="query" placeholder="刑法"></input>
+    <button ng-click="search()">找法律名</button>
+    <hr>
+    <ul>
+      <li ng-repeat="law in search_result">
+      <a href="output/law/json/{{law.file}}">{{law.name}}<span ng-show="law.status != '實施'"> ({{law.status}})</span></a>
+      </li>
+    </ul>
   </body>
 </html>
