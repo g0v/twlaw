@@ -22,4 +22,5 @@ devDependencies:
   optimist: \0.3.x
   mkdirp: \0.3.x
   walk: \2.2.x
+  zhutil: \0.5.x
 optionalDependencies: {}
