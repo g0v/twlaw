@@ -18,6 +18,7 @@ done
 
 while read file url; do
     mkdir -p `dirname $file`
+    echo 'output: ' $file
     curl "$url" | iconv -f big5 | sed -e "$filter" > $file
     sleep 1
 done < $1
