@@ -9,7 +9,7 @@ app.factory 'index', ($http) ->
           return
 
         self = @
-        $http.get('output/law/json/index.json')
+        $http.get('json/index.json')
             .success((data) ->
               self.data = data
               callback self.data
