@@ -1,0 +1,14 @@
+<h2>{{law.name}}<span ng-show="law.status != '實施'"> ({{law.status}})</span></h2>
+
+<ul ng-repeat="item in law.content">
+  <li>
+    <div>
+      <span class="num">{{item.zh}}</span>
+      <div class="article" ng-bind-html-unsafe="item.article"></div>
+    </div>
+    <div class="reason" ng-show="item.reason">
+      <label>說明：</label>
+      <span ng-bind-html-unsafe="item.reason"></span>
+    </div>
+  </li>
+</ul>

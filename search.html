@@ -1,19 +1,12 @@
-<!doctype html>
-<html ng-app="app">
-  <head>
-    <title>Example</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-    <script src="lib/search.js"></script>
-  </head>
-  <body ng-controller="MainCtrl">
-    <label>Search</label>
-    <input type="text" ng-model="query" placeholder="刑法"></input>
-    <button ng-click="search()">找法律</button>
-    <hr>
-    <ul>
-      <li ng-repeat="law in search_result">
-      <a href="output/law/json/{{law.file}}">{{law.name}}<span ng-show="law.status != '實施'"> ({{law.status}})</span></a>
-      </li>
-    </ul>
-  </body>
-</html>
+<label>Search</label>
+<!-- TODO populate query with q= parameter -->
+<input type="text" ng-model="query" placeholder="例：民法、軍審法"></input>
+<button ng-click="search()">找法律</button>
+
+<hr>
+
+<ul>
+  <li ng-repeat="law in search_result">
+    <a href="#/browse/{{law.name}}">{{law.name}}<span ng-show="law.status != '實施'"> ({{law.status}})</span></a>
+  </li>
+</ul>
