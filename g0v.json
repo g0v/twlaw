@@ -1,0 +1,40 @@
+{
+  "author": "victorhsieh",
+  "status": "alpha",
+  "name": "twlaw",
+  "description": "Taiwan law - Organize Taiwan laws",
+  "description_zh": "Taiwan law - 整理台灣法律條文",
+  "homepage": "https://github.com/g0v/twlaw",
+  "document": "https://github.com/g0v/twlaw",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/g0v/twlaw"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "keywords": [
+    "livescript",
+    "python",
+    "law",
+  ],
+  "audience": [
+    "contributor"
+  ],
+  "products": [
+    "data"
+  ],
+  "projects": [
+    "g0v",
+    "ly"
+  ],
+  "contributors": [
+    "victorhsieh",
+    "czchen"
+  ],
+  "needs": [
+    "programmer",
+  ]
+}
