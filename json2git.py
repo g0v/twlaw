@@ -51,6 +51,9 @@ for rev in law['revision']:
     if int(date[:date.index('.')]) < 1970:
         date = '1970.1.1'
 
+    msg = "%s %s" % (law_name, rev['date'].encode('utf-8'))
+    system_or_cry('git commit --date "%sT23:00:00" -m "%s"' % (date.encode('utf-8'), msg))
+
     detail = ''
     if 'reference' in rev and len(rev['reference']) > 0:
         refs = rev['reference']
@@ -60,7 +63,5 @@ for rev in law['revision']:
             if 'misc' in ref:
                 detail += "  ref: %s %s" % (ref['misc']['content'], ref['misc']['link'])
 
-    msg = "%s %s" % (law_name, rev['date'].encode('utf-8'))
     if detail:
-        msg += '\n\n' + detail.encode('utf-8')
-    system_or_cry('git commit --date "%sT23:00:00" -m "%s"' % (date.encode('utf-8'), msg))
+        system_or_cry('git notes add HEAD -m "%s"' %  detail.encode('utf-8'))

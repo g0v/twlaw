@@ -26,6 +26,10 @@ For single law
           ./json2git.py $dir/law_history.json output/law
       done
 
+    % git remote add github git@github.com:victorhsieh/tw-law-corpus.git
+    % git push -f github master
+    % git push github refs/notes/*
+
 ## Crawl the source
 
 The source pages are committed so that we can check for updates.  But if you
