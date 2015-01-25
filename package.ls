@@ -1,3 +1,4 @@
+#!/usr/bin/env lsc -cj
 author:
   name: ['Victor Hsieh']
   email: 'victor@csie.org'
@@ -12,15 +13,11 @@ scripts:
     ./node_modules/.bin/lsc -cj package.ls
     ./node_modules/.bin/lsc -cbo lib src
   """
-main: 'lib/law2jit.js'
-engines:
-  node: '0.8.x'
-  npm: '1.1.x'
-dependencies: {}
+dependencies:
+  mkdirp: '^0.5.0'
 devDependencies:
   LiveScript: \1.1.x
   optimist: \0.3.x
-  mkdirp: \0.3.x
   walk: \2.2.x
   zhutil: \0.5.x
 optionalDependencies: {}
