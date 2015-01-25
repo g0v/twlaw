@@ -1,6 +1,5 @@
-require! {optimist, fs, mkdirp, path}
+require! <[optimist fs mkdirp path zhutil]>
 require! './lib/parse'
-require! './lib/zhutil'
 
 fixup = -> it.replace /　/g, ' '
 fixBr = -> it - /\s*<br>\s*/ig - /\s+$/
