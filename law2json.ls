@@ -29,7 +29,7 @@ parseHTML = (lawdir, changes_by_date) ->
     html = fixup fs.readFileSync "#lawdir/修正沿革.html", \utf8
     for line in html / '\n'
         match line
-        | /<TR><TD COLSPAN=5><FONT COLOR=teal SIZE=4><b>(.*)<\/b>/ =>
+        | /<TR><TD COLSPAN=5><FONT COLOR=teal SIZE=3><b>(.*)<\/b>/ =>
             law_history.name = that.1
 
         | /<TR><TD COLSPAN=5><B>(.*)<\/B>/ =>
@@ -37,7 +37,7 @@ parseHTML = (lawdir, changes_by_date) ->
             date = parseDate(that.1)
             law_history.revision.push {date: date, content: {}, reference: changes_by_date[date]}
 
-        | /<FONT COLOR=8000FF SIZE=4>([^<]*)/ =>
+        | /<FONT COLOR=8000FF SIZE=3>([^<]*)/ =>
             zh = that.1 - /\s/g;
             if zh == ''
                 zh = \前言
