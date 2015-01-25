@@ -14,6 +14,8 @@ scripts:
     ./node_modules/.bin/lsc -cbo lib src
   """
 dependencies:
+  cheerio: '^0.18.0'
+  minimist: '^1.1.0'
   mkdirp: '^0.5.0'
 devDependencies:
   LiveScript: \1.1.x
