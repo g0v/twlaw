@@ -2,7 +2,7 @@ require! <[optimist fs mkdirp path zhutil]>
 require! './lib/parse'
 
 fixup = -> it.replace /　/g, ' '
-fixBr = -> it - /\s*<br>\s*/ig - /\s+$/
+fixBr = -> it.replace(/\s*<br>\s*/g, "\n") - /^\s+|\s+$/
 
 parseZHNumber = zhutil.parseZHNumber
 
