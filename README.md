@@ -95,3 +95,34 @@ Currently it's done manually.
 
     # one record per line for mongodbimport
     % ./node_modules/.bin/lsc parse_progress.ls --ad 8 --newline > progress.json
+
+# Gulp Workflow
+
+### 0. Update the first link in ./prepare_categories.sh manually
+0.  `% npm install`
+1. [http://lis.ly.gov.tw/lgcgi/lglaw](http://lis.ly.gov.tw/lgcgi/lglaw) -> 分類瀏覽 -> 任意一筆
+2. set $PORTAL env variable to the url
+
+### 1. Prepare categories
+you can use $PORTAL or default value in `tasks/prepare_categories.ls` L12.
+
+    % gulp
+default is `gulp prepare_categories`
+
+### 2. Fetch law pages
+Fetch single categories
+
+    % gulp fetch:single --cat 主計-會計
+
+Fetcg all categories
+
+    % gulp fetch:all
+
+### 3. Fetch law pages (all revision)
+Fetch single categories
+
+    % gulp fetch:single_revision --cat 主計-會計
+
+Fetcg all categories
+
+    % gulp fetch:all_revision
