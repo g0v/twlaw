@@ -14,13 +14,14 @@ scripts:
     ./node_modules/.bin/lsc -cbo lib src
   """
 dependencies:
-  LiveScript: '1.3.x'
+  LiveScript: '1.2.x'
   cheerio: '^0.18.0'
   glob: '^4.3.5'
   gulp: '^3.8.10'
   'gulp-download': 'git+https://git@github.com/yhsiang/gulp-download#typeof_array'
   'gulp-split': 'git+https://git@github.com/yhsiang/gulp-split'
   'gulp-utf8-convert': '0.0.4'
+  'iconv-lite': '^0.4.x'
   minimist: '^1.1.0'
   mkdirp: '^0.5.0'
   'prelude-ls': '^1.1.1'
