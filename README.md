@@ -126,3 +126,12 @@ Fetch single categories
 Fetcg all categories
 
     % gulp fetch:all_revision
+
+### 4. Convert law to json
+Convert single law
+
+    % gulp json:single --name 會計師法
+
+COnvert all laws
+
+    % gulp json:all
