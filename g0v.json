@@ -18,7 +18,7 @@
   "keywords": [
     "livescript",
     "python",
-    "law",
+    "law"
   ],
   "audience": [
     "contributor"
@@ -35,6 +35,6 @@
     "czchen"
   ],
   "needs": [
-    "programmer",
+    "programmer"
   ]
 }
